@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "iconfont";
+  /* Project id  */
+  src: url('iconfont.ttf?t=1699510423629') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-danwei:before {
+  content: "\e711";
+  color: #1296d6;
+}
+
+.icon-zuzhiguanli:before {
+  content: "\e60b";
+}
+
+.icon-bumen:before {
+  content: "\e673";
+  color: #1296d6;
+}

@@ -1,0 +1,65 @@
+/* 所有对element-ui的自定义样式 */
+
+
+
+.el-menu {
+    border-right: none;
+}
+
+.el-menu--horizontal>.el-menu-item.is-active {
+    border-bottom: 2px solid red;
+}
+
+.el-table td,
+.el-table th {
+    text-align: center;
+    padding: 2px 0;
+}
+
+.el-table th {
+    background-color: #eef1f6;
+}
+
+.el-table--border {
+    border-radius: 10px 10px 0 0;
+}
+
+.el-table .cell {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    overflow: hidden;
+}
+
+.el-dialog__header {
+    height: 30px;
+    line-height: 30px;
+    background-color: red;
+    color: white;
+    padding: 0;
+
+    span {
+        padding-left: 10px;
+    }
+}
+
+.el-dialog__headerbtn {
+    top: 7px
+}
+
+.el-dialog__headerbtn .el-dialog__close {
+    color: white;
+}
+
+.el-dialog__body {
+    padding: 10px 20px;
+}
+
+.el-dialog__footer {
+    background-color: #f8f8f8;
+    padding: 10px 20px 10px
+}
+
+.el-divider--horizontal {
+    margin: 0;
+}
