@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { Component } from 'vue-property-decorator';
-import systemArchives from '@/views/occupHealhPages/systemArchives';
+const layout = () => import('@/layouts/index.vue');
 
 Vue.use(VueRouter);
 
@@ -19,9 +19,17 @@ VueRouter.prototype.push = function push(location) {
 
 const routes = [
   {
-    path: '/SystemArchives',
-    name: 'SystemArchives',
-    component: systemArchives
+    path: '/pages',
+    name: 'Layout',
+    component: layout
+  },
+  {
+      path: '/',
+      redirect: '/pages'
+  },
+  {
+      path: '*',
+      redirect: '/pages'
   }
 ];
 
@@ -48,3 +56,5 @@ router.beforeEach((to, from, next) => {
   //   }
   // }
 });
+
+export default router;
