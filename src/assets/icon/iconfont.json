@@ -1,0 +1,30 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7476543",
+      "name": "单位",
+      "font_class": "danwei",
+      "unicode": "e711",
+      "unicode_decimal": 59153
+    },
+    {
+      "icon_id": "11409204",
+      "name": "组织管理",
+      "font_class": "zuzhiguanli",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "20690845",
+      "name": "部门",
+      "font_class": "bumen",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    }
+  ]
+}
