@@ -23,8 +23,14 @@ module.exports = {
           dataUrlCondition: { maxSize: 1024 * 5 },
         },
         generator: {
-          filename: "font/[name]-[hash:8].[ext]",
+          filename: "css/font/[name]-[hash:8][ext]",
         },
+        // options: {
+        //   limit: 10000,
+        //   // 以下是我需要解决路径问题的代码， 只需要加入publicPath: '../../
+        //   publicPath: "../",
+        //   name: "font/[name]-[hash:8].[ext]",
+        // },
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -82,11 +88,11 @@ module.exports = {
     // }),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      title: "新凤鸣职业健康系统",
+      title: "凤平台职业健康",
       templateParameters: {
         BASE_URL: `/`,
       },
-      template: "/public/index.html",
+      template: "public/index.html",
       ...(isProd
         ? {
             minify: {

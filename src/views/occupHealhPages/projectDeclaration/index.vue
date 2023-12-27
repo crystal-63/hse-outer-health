@@ -152,7 +152,7 @@ export default {
       },
       Height: 250,
       paramJson: {
-        type: 1,
+        type: 2,
         creatorName: "",
         name: "",
         time: [],
@@ -164,7 +164,7 @@ export default {
         current: 1,
       },
       addOrUpdateReq: {
-        type: 1,
+        type: 2,
         name: "",
         files: [],
       },
@@ -288,7 +288,7 @@ export default {
     reSubmit() {
       this.tableInfo.current = 1;
       this.tableInfo.size = 20;
-      this.tableInfo.type = 1;
+      this.tableInfo.type = 2;
       for (var key in this.paramJson) {
         if (key === "time") {
           this.paramJson[key] = [];

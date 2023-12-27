@@ -3,7 +3,7 @@
     <div class="query-head">
       <div class="head-form">
         <el-form :inline="true" :model="paramJson" class="demo-form-inline">
-          <el-form-item label="文件名称" style="margin-bottom: 0px">
+          <el-form-item label="报告名称" style="margin-bottom: 0px">
             <el-input v-model="paramJson.name" size="mini"></el-input>
           </el-form-item>
           <el-form-item label="上传人" style="margin-bottom: 0px">
@@ -51,7 +51,8 @@
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="文件名称"></el-table-column>
+        <el-table-column prop="name" label="报告名称"></el-table-column>
+        <el-table-column prop="content" label="报告内容"></el-table-column>
         <el-table-column prop="fileName" label="文件内容">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="handleTurn(scope.row)">{{
@@ -90,30 +91,62 @@
         class="demo-ruleForm"
       >
         <el-form-item
-          label="文件名称"
+          label="报告名称"
           :prop="'name'"
-          :rules="[{ required: true, message: '请填写文件名称' }]"
+          :rules="[{ required: true, message: '请填写报告名称' }]"
         >
           <el-input v-model="addOrUpdateReq.name"></el-input>
         </el-form-item>
         <el-form-item
-          label="文件内容"
-          :prop="'files'"
-          :rules="[{ required: true, message: '请上传文件' }]"
+          label="报告内容"
+          :prop="'content'"
+          :rules="[{ required: true, message: '请填写报告内容' }]"
+        >
+          <el-input v-model="addOrUpdateReq.content"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="上传附件"
+          :prop="'att'"
+          :rules="[{ required: true, message: '请上传附件' }]"
         >
           <el-upload
             class="upload-demo"
             ref="upload"
             action="upload"
-            :on-remove="handleRemove"
-            :file-list="addOrUpdateReq.files"
-            :http-request="handleExport"
+            :on-remove="
+              (file, fileList) => handleRemove(file, fileList, 'file')
+            "
+            :file-list="addOrUpdateReq.att"
+            :http-request="(value) => handleExport(value, 'file')"
             :on-error="handleError"
             :on-success="handleSuccess"
           >
             <el-button slot="trigger" size="small" type="primary"
               >上传文件</el-button
             >
+            <div slot="tip" class="el-upload__tip">只能上传文件</div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item
+          label="上传图片"
+          :prop="'pic'"
+          :rules="[{ required: true, message: '请上传图片' }]"
+        >
+          <el-upload
+            class="upload-demo"
+            ref="upload"
+            action="upload"
+            :on-remove="(file, fileList) => handleRemove(file, fileList, 'pic')"
+            :file-list="addOrUpdateReq.pic"
+            :http-request="(value) => handleExport(value, 'pic')"
+            :on-error="handleError"
+            :on-success="handleSuccess"
+            :list-type="picture"
+          >
+            <el-button slot="trigger" size="small" type="primary"
+              >上传图片</el-button
+            >
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -131,15 +164,16 @@
 
 <script>
 import {
-  getSysArchivesList,
-  setSysArchivesData,
-  delSysArchivesData,
+  getTestReportList,
+  setTestReportList,
+  delTestReport,
+  // delSysArchivesData,
 } from "../../../api/occupHealth";
 import { MyPagination } from "../../../components";
 import { showMessage, tools } from "../../../utils";
 
 export default {
-  name: "systemArchives",
+  name: "testReport",
   components: {
     MyPagination,
   },
@@ -152,7 +186,6 @@ export default {
       },
       Height: 250,
       paramJson: {
-        type: 1,
         creatorName: "",
         name: "",
         time: [],
@@ -164,9 +197,10 @@ export default {
         current: 1,
       },
       addOrUpdateReq: {
-        type: 1,
         name: "",
-        files: [],
+        content: "",
+        att: [],
+        pic: [],
       },
       addDialogVisible: false,
       isUpdate: false,
@@ -197,7 +231,7 @@ export default {
         delete this.paramJson.endTime;
       }
 
-      getSysArchivesList({
+      getTestReportList({
         ...this.paramJson,
         current: this.tableInfo.current,
         size: this.tableInfo.size,
@@ -210,8 +244,8 @@ export default {
             if (data.data.records && data.data.records.length > 0) {
               const newData = [];
               data.data.records.map((item) => {
-                if (item.files && item.files.length !== 0) {
-                  item.files.map((x) => {
+                if (item.att && item.att.length !== 0) {
+                  item.att.map((x) => {
                     newData.push({
                       ...item,
                       fileName: x.name,
@@ -288,7 +322,7 @@ export default {
     reSubmit() {
       this.tableInfo.current = 1;
       this.tableInfo.size = 20;
-      this.tableInfo.type = 1;
+      this.tableInfo.type = 2;
       for (var key in this.paramJson) {
         if (key === "time") {
           this.paramJson[key] = [];
@@ -316,7 +350,7 @@ export default {
       console.log("formName", formName);
       try {
         this.addOrUpdateReq.name = "";
-        this.addOrUpdateReq.files = [];
+        this.addOrUpdateReq.att = [];
       } catch (error) {
         console.log("error", error);
       }
@@ -328,7 +362,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          setSysArchivesData(this.addOrUpdateReq)
+          setTestReportList(this.addOrUpdateReq)
             .then(() => {
               if (this.isUpdate) {
                 this.$message.success(showMessage.apiMessage.updateSuccess);
@@ -366,19 +400,27 @@ export default {
         type: "error",
       });
     },
-    async handleExport(value) {
-      this.isRequest = true;
+    async handleExport(value, type) {
       const result = await tools.handleExport(value, 1);
       if (result) {
-        this.$message.success("上传成功");
-        this.addOrUpdateReq.files.push({
-          name: result.name,
-          path: result.path,
-        });
+        // this.$message.success("上传成功");
+        if (type === "file") {
+          this.addOrUpdateReq.att.push({
+            name: result.name,
+            path: result.path,
+          });
+        } else {
+          this.addOrUpdateReq.pic.push(result.path);
+        }
       }
     },
-    handleRemove(file, fileList) {
+    handleRemove(file, fileList, type) {
       console.log(file, fileList);
+      if (type === "file") {
+        this.addOrUpdateReq.att = fileList;
+      } else {
+        this.addOrUpdateReq.pic = fileList;
+      }
     },
     delApi(row) {
       this.$confirm(
@@ -391,7 +433,7 @@ export default {
         }
       )
         .then(() => {
-          delSysArchivesData({ id: row.id })
+          delTestReport({ id: row.id })
             .then(() => {
               this.$message.success(showMessage.apiMessage.deleteSuccess);
               this.getList();

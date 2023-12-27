@@ -138,7 +138,7 @@ instance.interceptors.response.use(
   }
 );
 
-export function getDownload(url, parms) {
+function getDownload(url, parms) {
   return new Promise((resolve, reject) => {
     instance
       .get(url, {
@@ -185,6 +185,6 @@ function getRestApi(url, parms) {
       });
   });
 }
-export { getRestApi, getParms };
+export { getRestApi, getParms, getDownload, instance };
 
-export default instance;
+// export default instance;
