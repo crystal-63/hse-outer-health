@@ -22,40 +22,64 @@ const occupHealhPages = [
     },
   },
   {
-    path: "workspaceHarm",
-    name: "工作场所危害因素管理",
+    path: "testReport",
+    name: "职业危害因素检测报告",
     component: testReport.default,
     meta: {
-      title: "工作场所危害因素",
+      title: "职业危害因素检测报告",
     },
-    redirect: "/pages/workspaceHarm/testReport",
-    children: [
-      {
-        path: "testReport",
-        name: "职业危害因素检测报告",
-        component: testReport.default,
-        meta: {
-          title: "职业危害因素检测报告",
-        },
-      },
-      {
-        path: "testResults",
-        name: "职业危害因素检测数据",
-        component: testResults.default,
-        meta: {
-          title: "职业危害因素检测数据",
-        },
-      },
-      {
-        path: "detectionData",
-        name: "职业危害因素检测结果",
-        component: detectionData.default,
-        meta: {
-          title: "职业危害因素检测结果",
-        },
-      },
-    ],
   },
+  {
+    path: "detectionData",
+    name: "职业危害因素检测数据",
+    component: detectionData.default,
+    meta: {
+      title: "职业危害因素检测数据",
+    },
+  },
+  {
+    path: "testResults",
+    name: "职业危害因素检测结果",
+    component: testResults.default,
+    meta: {
+      title: "职业危害因素检测结果",
+    },
+  },
+  // {
+  //   path: "workspaceHarm",
+  //   name: "工作场所危害因素管理",
+  //   // component: layout,
+  //   meta: {
+  //     title: "工作场所危害因素",
+  //   },
+  //   // redirect: "/pages/testReport",
+  //   children: [
+  //     {
+  //       path: "testReport",
+  //       name: "职业危害因素检测报告",
+  //       component: testReport.default,
+  //       meta: {
+  //         title: "职业危害因素检测报告",
+  //       },
+  //     },
+  //     {
+  //       path: "testResults",
+  //       name: "职业危害因素检测数据",
+  //       component: detectionData.default,
+  //       meta: {
+  //         title: "职业危害因素检测数据",
+  //       },
+  //     },
+  //     {
+  //       path: "detectionData",
+  //       name: "职业危害因素检测结果",
+  //       component: testResults.default,
+  //       meta: {
+  //         title: "职业危害因素检测结果",
+  //       },
+  //     },
+  //   ],
+  // },
 ];
 
 export default occupHealhPages;

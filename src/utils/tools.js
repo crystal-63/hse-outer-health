@@ -8,7 +8,7 @@ export const hashLen = () => {
   };
 };
 
-export async function handleExport(value, type) {
+export async function handleImport(value, type) {
   const file = value.file;
   const param = new FormData();
   // 文件对象
@@ -36,3 +36,25 @@ export async function handleExport(value, type) {
     return false;
   }
 }
+
+export function expenseloadFile(value) {
+  try {
+    
+    let { data, filename } = value;
+    console.log('filename', filename.split("filename*=utf-8''"))
+    let blob = new Blob([data]);
+    let url = window.URL.createObjectURL(blob);
+    let aDownload = document.createElement("a");
+    aDownload.href = url;
+    filename = decodeURI(filename.split("utf-8''")[1]);
+    aDownload.download = `${filename}`;
+    aDownload.href = url;
+    document.body.appendChild(aDownload);
+    aDownload.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(aDownload);
+    return true;
+  } catch (e) {
+    return false;
+  }
+} 

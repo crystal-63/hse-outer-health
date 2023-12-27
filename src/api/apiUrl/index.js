@@ -2,6 +2,7 @@
 const userApi = {
   userDetail: "",
   login: "/pc/login",
+  postApi: ''
 };
 
 // 职业健康档案制度

@@ -60,6 +60,11 @@
             }}</el-button>
           </template>
         </el-table-column>
+        <el-table-column prop="pic" label="图片">
+          <template slot-scope="scope">
+            <el-image style="width: 50px; height: 25px" :src="scope.row.pic[0]" :preview-src-list="scope.row.pic"></el-image>
+          </template>
+        </el-table-column>
         <el-table-column prop="creatorName" label="上传者"></el-table-column>
         <el-table-column prop="createTime" label="上传时间"></el-table-column>
         <el-table-column prop="code" label="操作">
@@ -111,17 +116,17 @@
         >
           <el-upload
             class="upload-demo"
-            ref="upload"
+            ref="upload1"
             action="upload"
             :on-remove="
               (file, fileList) => handleRemove(file, fileList, 'file')
             "
             :file-list="addOrUpdateReq.att"
-            :http-request="(value) => handleExport(value, 'file')"
+            :http-request="(value) => handleImport(value, 'file')"
             :on-error="handleError"
             :on-success="handleSuccess"
           >
-            <el-button slot="trigger" size="small" type="primary"
+            <el-button slot="trigger" size="mini" type="primary"
               >上传文件</el-button
             >
             <div slot="tip" class="el-upload__tip">只能上传文件</div>
@@ -138,12 +143,12 @@
             action="upload"
             :on-remove="(file, fileList) => handleRemove(file, fileList, 'pic')"
             :file-list="addOrUpdateReq.pic"
-            :http-request="(value) => handleExport(value, 'pic')"
+            :http-request="(value) => handleImport(value, 'pic')"
             :on-error="handleError"
             :on-success="handleSuccess"
             :list-type="picture"
           >
-            <el-button slot="trigger" size="small" type="primary"
+            <el-button slot="trigger" size="mini" type="primary"
               >上传图片</el-button
             >
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
@@ -363,15 +368,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           setTestReportList(this.addOrUpdateReq)
-            .then(() => {
-              if (this.isUpdate) {
-                this.$message.success(showMessage.apiMessage.updateSuccess);
-              } else {
+            .then(({data}) => {
+              if( data.code === 200 ) {
                 this.$message.success(showMessage.apiMessage.addSuccess);
+                this.resetForm(formName);
+                this.getList();
+                this.addDialogVisible = false;
               }
-              this.resetForm(formName);
-              this.getList();
-              this.addDialogVisible = false;
             })
             .catch((e) => {
               console.log("e", e);
@@ -387,10 +390,10 @@ export default {
 
     // 导入成功回调
     handleSuccess() {
-      this.$message({
-        message: showMessage.fileMessage.importSuccess,
-        type: "success",
-      });
+      // this.$message({
+      //   message: showMessage.fileMessage.importSuccess,
+      //   type: "success",
+      // });
     },
 
     // 导入失败回调
@@ -400,19 +403,32 @@ export default {
         type: "error",
       });
     },
-    async handleExport(value, type) {
-      const result = await tools.handleExport(value, 1);
-      if (result) {
+    async handleImport(value, type) {
+      const result = await tools.handleImport(value, 1);
+      if (type === "file") {
+        if (result) {
         // this.$message.success("上传成功");
-        if (type === "file") {
           this.addOrUpdateReq.att.push({
             name: result.name,
             path: result.path,
           });
-        } else {
-          this.addOrUpdateReq.pic.push(result.path);
+        }else {
+          let uid = value.file.uid // 关键作用代码，去除文件列表失败文件
+          let idx = this.$refs.upload.uploadFiles.findIndex(item => item.uid === uid) // 关键作用代码，去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs.upload1.uploadFiles.splice(idx, 1) // 关键作用代码，去除文件列表失败文件
+        }
+          
+      } else {
+        if (result) {
+        // this.$message.success("上传成功");
+        this.addOrUpdateReq.pic.push(result.path);
+        }else {
+          let uid = value.file.uid // 关键作用代码，去除文件列表失败文件
+          let idx = this.$refs.upload.uploadFiles.findIndex(item => item.uid === uid) // 关键作用代码，去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs.upload.uploadFiles.splice(idx, 1) // 关键作用代码，去除文件列表失败文件
         }
       }
+      
     },
     handleRemove(file, fileList, type) {
       console.log(file, fileList);
@@ -434,9 +450,11 @@ export default {
       )
         .then(() => {
           delTestReport({ id: row.id })
-            .then(() => {
-              this.$message.success(showMessage.apiMessage.deleteSuccess);
-              this.getList();
+          .then(({data}) => {
+              if(data.code === 200) {
+                this.$message.success(showMessage.apiMessage.deleteSuccess);
+                this.getList();
+              }
             })
             .catch(() => {
               this.$message.error(showMessage.apiMessage.deleteFail);

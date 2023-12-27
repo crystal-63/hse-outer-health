@@ -107,11 +107,11 @@
             action="upload"
             :on-remove="handleRemove"
             :file-list="addOrUpdateReq.files"
-            :http-request="handleExport"
+            :http-request="handleImport"
             :on-error="handleError"
             :on-success="handleSuccess"
           >
-            <el-button slot="trigger" size="small" type="primary"
+            <el-button slot="trigger" size="mini" type="primary"
               >上传文件</el-button
             >
           </el-upload>
@@ -329,15 +329,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           setSysArchivesData(this.addOrUpdateReq)
-            .then(() => {
-              if (this.isUpdate) {
-                this.$message.success(showMessage.apiMessage.updateSuccess);
-              } else {
+            .then((res) => {
+              if(res.data.code === 200) {
                 this.$message.success(showMessage.apiMessage.addSuccess);
+                this.resetForm(formName);
+                this.getList();
+                this.addDialogVisible = false;
               }
-              this.resetForm(formName);
-              this.getList();
-              this.addDialogVisible = false;
             })
             .catch((e) => {
               console.log("e", e);
@@ -353,10 +351,10 @@ export default {
 
     // 导入成功回调
     handleSuccess() {
-      this.$message({
-        message: showMessage.fileMessage.importSuccess,
-        type: "success",
-      });
+      // this.$message({
+      //   message: showMessage.fileMessage.importSuccess,
+      //   type: "success",
+      // });
     },
 
     // 导入失败回调
@@ -366,15 +364,18 @@ export default {
         type: "error",
       });
     },
-    async handleExport(value) {
+    async handleImport(value) {
       this.isRequest = true;
-      const result = await tools.handleExport(value, 1);
+      const result = await tools.handleImport(value, 1);
       if (result) {
-        this.$message.success("上传成功");
         this.addOrUpdateReq.files.push({
           name: result.name,
           path: result.path,
         });
+      }else {
+        let uid = value.file.uid // 关键作用代码，去除文件列表失败文件
+        let idx = this.$refs.upload.uploadFiles.findIndex(item => item.uid === uid) // 关键作用代码，去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+        this.$refs.upload.uploadFiles.splice(idx, 1) // 关键作用代码，去除文件列表失败文件
       }
     },
     handleRemove(file, fileList) {
@@ -392,9 +393,11 @@ export default {
       )
         .then(() => {
           delSysArchivesData({ id: row.id })
-            .then(() => {
-              this.$message.success(showMessage.apiMessage.deleteSuccess);
-              this.getList();
+            .then(({data}) => {
+              if(data.code === 200) {
+                this.$message.success(showMessage.apiMessage.deleteSuccess);
+                this.getList();
+              }
             })
             .catch(() => {
               this.$message.error(showMessage.apiMessage.deleteFail);

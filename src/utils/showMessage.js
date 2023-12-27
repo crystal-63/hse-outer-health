@@ -18,6 +18,8 @@ const fileMessage = {
   importFail: "导入失败",
   deleteSuccess: "删除成功！",
   selectData: "请先选择一条数据！",
+  exportSuccess: "导出成功！",
+  exportFail: "导出失败！",
 };
 
 const loginMessage = {

@@ -50,6 +50,7 @@ instance.interceptors.response.use(
       ) {
         const index = headers["content-disposition"].lastIndexOf("=");
         const filename = headers["content-disposition"].substr(index + 1);
+
         return { data: { filename: filename, data: res.data } };
       } else if (
         data.code == 200 ||
