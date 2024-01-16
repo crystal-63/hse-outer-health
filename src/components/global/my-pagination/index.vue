@@ -1,14 +1,6 @@
 <template>
   <div class="pagination-style">
-    <el-pagination
-      :page-size="pageSize"
-      :page-sizes="pageSizes"
-      :current-page="current"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :layout="layout"
-      :total="total"
-    ></el-pagination>
+    <el-pagination :page-size="pageSize" :page-sizes="pageSizes" :current-page="current" @size-change="handleSizeChange" @current-change="handleCurrentChange" :layout="layout" :total="total" :pager-count="pagerCount"></el-pagination>
   </div>
 </template>
 
@@ -22,6 +14,7 @@ export default {
     pageSize: Number,
     pageSizes: Array,
     current: Number,
+    pagerCount: Number,
   },
   created() {
     console.log("12341", this.total1, this.current);

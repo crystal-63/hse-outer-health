@@ -5,26 +5,28 @@ import { Message } from "element-ui";
 // const isNode = process.env.NODE_ENV;
 
 const instance = axios.create({
-  baseURL: "http://121.196.224.33:8060/api",
+  // baseURL: "http://121.196.224.33:8060/api",
+  baseURL: "http://192.168.129.31:8060/api",
   // isNode === "development" ? "http://121.196.224.33:8060/api" : baseUrl,
   timeout: 10000,
 });
 
 instance.interceptors.request.use(
   (config) => {
-    //配置token
-    // const token = getToken();
-    //如果token存在，放到请求的头部
-    // if (token) {
-    //     config.headers = {
-    //         ...config.headers,
-    //         token: token
-    //     }
-    // }
-    config.headers = {
-      ...config.headers,
-      currentUserId: "1738048575524335619",
-    };
+    console.log("222", config);
+    if (config.url !== "/pc/login/pares") {
+      //配置token
+      let currentUserId = sessionStorage.getItem("currentUserId");
+      if (currentUserId) {
+        config.headers = {
+          ...config.headers,
+          currentUserId: currentUserId,
+        };
+      } else {
+        // this.$router.push("/login");
+      }
+    }
+
     return config;
   },
   (error) => {

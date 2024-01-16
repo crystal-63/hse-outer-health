@@ -1,8 +1,11 @@
 // 用户
 const userApi = {
-  userDetail: "",
+  userDetail: "/pc/login/pares",
   login: "/pc/login",
-  postApi: ''
+  postApi: "/pc/sys/select/post",
+  orgApi: "/pc/sys/select/org",
+  sysOrgTree: "/pc/sys/select/org/tree",
+  sysUserList: "/pc/sys/select/user/list",
 };
 
 // 职业健康档案制度
@@ -35,6 +38,7 @@ const workplaceHazardFactors = {
   addExamineResult: "/pc/health/test/result/add",
   examineResultList: "/pc/health/test/result/page",
   deleteExamineResult: "/pc/health/test/result/remove",
+  delTestResult: "/pc/health/test/result/remove",
 };
 
 // 危害因素设置
@@ -60,6 +64,19 @@ const healthUserConfig = {
   healthUserTabooList: "/pc/health/user/taboo/page",
 };
 
+// 劳保用品
+const labourInsurance = {
+  addLabourGoods: "/pc/health/config/goods/add",
+  labourGoodsList: "/pc/health/config/goods/list",
+  defendConfig: "/pc/health/config/post/goods/add",
+  defendConfigList: "/pc/health/config/post/goods/list",
+  addGoodsIssueRecord: "/pc/goods/issue/record/add",
+  issuesNumCalculate: "/pc/goods/issue/record/calculate",
+  issueRecordDetail: "/pc/goods/issue/record/detail",
+  deptIssueRecord: "/pc/goods/issue/record/list",
+  auditList: "/pc/goods/issue/record/audit/flow",
+};
+
 export {
   userApi,
   systemArchives,
@@ -68,4 +85,5 @@ export {
   hazardFactorsConfig,
   postHazardFactorsConfig,
   healthUserConfig,
+  labourInsurance,
 };

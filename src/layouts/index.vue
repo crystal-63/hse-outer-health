@@ -1,23 +1,31 @@
 <template>
   <div class="page-content">
+    <!-- <div class="head-back">
+      <div class="head-left">
+        <div class="page-logo"></div>
+      </div>
+      <div class="head-content">
+        <el-menu default-active="1" class="el-menu-demo" mode="horizontal">
+          <el-menu-item index="1">职业健康</el-menu-item>
+        </el-menu>
+      </div>
+      <div class="head-right">
+        <el-dropdown style="width: 100%; height: 100%">
+          <span class="el-dropdown-link">
+            <el-avatar style="margin-right: 10px" size="small" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+            {{ userInfo.name }}
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item style="width: 150px;padding: 10px" @click.native="loginOut()">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </div>-->
     <div class="bottom-back">
       <div class="left-query" :style="menuStyle">
         <div :style="iconStyle">
-          <my-icon
-            @click="iconClick(icon)"
-            class="my-left-icon"
-            v-for="(icon, i) in headerLeftIcons"
-            :font="icon.font"
-            :color="icon.color"
-            :icon="icon.icon"
-            padding="10px"
-            :key="icon.icon + i"
-          ></my-icon>
-          <left-menu
-            @handleSelect="select"
-            :menuList="childrenList"
-            :active="name"
-          ></left-menu>
+          <my-icon @click="iconClick(icon)" class="my-left-icon" v-for="(icon, i) in headerLeftIcons" :font="icon.font" :color="icon.color" :icon="icon.icon" padding="10px" :key="icon.icon + i"></my-icon>
+          <left-menu @handleSelect="select" :menuList="childrenList" :active="name"></left-menu>
         </div>
       </div>
       <div class="right-port">
@@ -25,11 +33,7 @@
           <router-view></router-view>
         </div>
         <div class="view-port" v-else>
-          <iframe
-            v-if="isRouterAlive"
-            :src="nowPathUrl"
-            id="maincontent"
-          ></iframe>
+          <iframe v-if="isRouterAlive" :src="nowPathUrl" id="maincontent"></iframe>
         </div>
       </div>
     </div>
@@ -67,6 +71,9 @@ export default {
   },
 
   computed: {
+    userInfo: function () {
+      return this.$store.getters.getUserInfo;
+    },
     collapse: function () {
       return this.$store.getters.getCollapse;
     },
@@ -113,6 +120,13 @@ export default {
       // return
       console.log("path", path);
       // const token = getToken();
+      const path1 = sessionStorage.getItem("path");
+      const token = sessionStorage.getItem("token");
+      if (path1 && token) {
+        this.name = path1;
+        this.$router.push(path1);
+        return;
+      }
       if (this.activeIndex == 1) {
         const index = path.lastIndexOf("#");
         const url = path.substring(index + 1, path.length);
@@ -136,6 +150,11 @@ export default {
       this.name = this.childrenList[0].url;
       this.select(this.childrenList[0].url);
     },
+    loginOut() {
+      console.log(12312312);
+      sessionStorage.removeItem("currentUserId");
+      this.$router.push("/login");
+    },
   },
 };
 </script>
@@ -146,6 +165,21 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+.head-content {
+  width: 100%;
+}
+.el-menu-demo {
+  width: fit-content;
+  height: 100%;
+}
+.el-menu-item {
+  height: 40px;
+  line-height: 42px;
+  color: #fff;
+}
+.el-menu--horizontal > .el-menu-item.is-active {
+  color: red;
 }
 
 .head-back {
@@ -168,15 +202,27 @@ export default {
 }
 
 .head-right {
-  display: flex;
-  align-items: center;
+  width: 150px;
+  height: 100%;
+  padding: 3px 10px;
   cursor: pointer;
+  .el-dropdown-link {
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
 }
 
 .page-logo {
-  width: 220px;
+  width: 240px;
+  height: 40px;
   display: flex;
   align-items: center;
+  background: url("../assets/img/topleft.png");
+  background-size: 100% 100%;
 }
 
 .bottom-back {

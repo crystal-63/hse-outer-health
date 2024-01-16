@@ -2,13 +2,14 @@ const { defineConfig } = require("@vue/cli-service");
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  baseUrl: "./",
   devServer: {
     port: 8060,
   },
   // 输出目录
   outputDir: "dist",
   // 静态文件目录
-  assetsDir: "static",
+  assetsDir: "assets",
   // html 输出路径
   indexPath: "index.html",
   filenameHashing: true,

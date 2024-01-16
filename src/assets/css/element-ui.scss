@@ -63,3 +63,24 @@
 .el-divider--horizontal {
     margin: 0;
 }
+
+.el-date-editor .el-range-separator {
+  padding: 0 15px;
+}
+
+.my-dialog {
+  width: 85%;
+}
+
+/* 解决element-ui的table表格控件表头与内容列不对齐问题 */
+
+.el-table th.el-table__cell {
+  display: table-cell !important;
+}
+.el-table th.el-table__cell {
+  padding: 7px 0;
+}
+
+.el-table td.el-table__cell {
+  padding: 5px 0;
+}

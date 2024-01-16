@@ -5,6 +5,8 @@ import {
   hazardFactorsConfig,
   postHazardFactorsConfig,
   healthUserConfig,
+  physicalReport,
+  labourInsurance,
 } from "../apiUrl";
 
 const httpserve = instance;
@@ -55,7 +57,9 @@ function importTestData(data) {
 }
 // 职业危害因素检测数据导出模版
 function exportTestDataTemp() {
-  return httpserve.get(workplaceHazardFactors.exportExamineData, {responseType: 'blob'});
+  return httpserve.get(workplaceHazardFactors.exportExamineData, {
+    responseType: "blob",
+  });
 }
 
 // 职业危害因素检测结果列表
@@ -107,9 +111,12 @@ function getHealthUserList(params) {
 function importInformCard(data) {
   return httpserve.post(healthUserConfig.importInformCard, data);
 }
-// 职业健康人员导出数据
+// 职业健康人员导出禁忌人员
 function exportHealthUserList(params) {
-  return httpserve.get(healthUserConfig.exportHealthUser, { params });
+  return httpserve.get(healthUserConfig.exportHealthUser, {
+    params,
+    responseType: "blob",
+  });
 }
 // 删除告知卡
 function delInformCard(params) {
@@ -118,6 +125,64 @@ function delInformCard(params) {
 // 职业健康人员禁忌列表
 function getHealthUserTabooList(params) {
   return httpserve.get(healthUserConfig.healthUserTabooList, { params });
+}
+// 职业健康体检报告列表
+function getPhysicalReportList(params) {
+  return httpserve.get(physicalReport.physicalReportList, { params });
+}
+// 职业健康体检报告删除
+function delPhysicalReport(params) {
+  return httpserve.get(physicalReport.deletePhysicalReport, { params });
+}
+// 职业健康体检报告导入数据
+function importPhysicalReport(data) {
+  return httpserve.post(physicalReport.importExcel, data);
+}
+// 职业健康体检报告导出模版
+function exportPhysicalReport(params) {
+  return httpserve.get(physicalReport.exportTemplate, {
+    params,
+    responseType: "blob",
+  });
+}
+
+// 劳动防护用品添加
+function setLabourGoods(data) {
+  return httpserve.post(labourInsurance.addLabourGoods, data);
+}
+// 劳动防护用品列表
+function getLabourGoodsList(params) {
+  return httpserve.get(labourInsurance.labourGoodsList, { params });
+}
+
+// 劳动防护用品添加
+function setDefendConfig(data) {
+  return httpserve.post(labourInsurance.defendConfig, data);
+}
+// 劳动防护用品列表
+function getDefendConfigList(params) {
+  return httpserve.get(labourInsurance.defendConfigList, { params });
+}
+
+// 劳防清单人员配置
+function setDetailedListUser(data) {
+  return httpserve.post(labourInsurance.addGoodsIssueRecord, data);
+}
+// 计算发放数量
+function calculateGrantCount(params) {
+  return httpserve.get(labourInsurance.issuesNumCalculate, { params });
+}
+// 详情
+function getIssueRecordDetail(params) {
+  return httpserve.get(labourInsurance.issueRecordDetail, { params });
+}
+// 部门领用记录
+function getDeptIssueRecord(params) {
+  return httpserve.get(labourInsurance.deptIssueRecord, { params });
+}
+// 审核列表
+function getAuditList(params) {
+  return httpserve.get(labourInsurance.auditList, { params });
 }
 
 export {
@@ -147,4 +212,17 @@ export {
   exportHealthUserList,
   delInformCard,
   getHealthUserTabooList,
-}
+  getPhysicalReportList,
+  delPhysicalReport,
+  importPhysicalReport,
+  exportPhysicalReport,
+  setLabourGoods,
+  getLabourGoodsList,
+  setDefendConfig,
+  getDefendConfigList,
+  setDetailedListUser,
+  calculateGrantCount,
+  getIssueRecordDetail,
+  getDeptIssueRecord,
+  getAuditList,
+};

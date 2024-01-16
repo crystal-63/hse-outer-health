@@ -1,16 +1,6 @@
 <template>
-  <el-menu
-    active-text-color="red"
-    class="el-menu-vertical-demo"
-    style="width: 100%"
-    :default-active="active"
-    @select="handleSelect"
-    @open="handleOpen"
-    @close="handleClose"
-    :collapse-transition="false"
-    :collapse="collapse"
-  >
-    <Menus :routerList="menuList"></Menus>
+  <el-menu active-text-color="red" class="el-menu-vertical-demo" style="width: 100%" :default-active="active" @select="handleSelect" @open="handleOpen" @close="handleClose" :collapse-transition="false" :collapse="collapse" :unique-opened="true">
+    <Menus v-for="item in menuList" :key="item.id" :item="item"></Menus>
   </el-menu>
 </template>
 
@@ -59,7 +49,7 @@ export default {
             <el-submenu index={`${menu.id}`}>
               <template slot="title">
                 <i class={`${menu.icon}`}></i>
-                <span>{menu.menuName}</span>
+                <span slot="title">{menu.menuName}</span>
               </template>
               {this.parserConfig()}
             </el-submenu>
@@ -67,8 +57,10 @@ export default {
         } else {
           result.push(
             <el-menu-item index={`${menu.url}`}>
-              <i class={`${menu.icon}`}></i>
-              <span slot="title">{menu.menuName}</span>
+              <template slot="title">
+                <i class={`${menu.icon}`}></i>
+                <span slot="title">{menu.menuName}</span>
+              </template>
             </el-menu-item>
           );
         }

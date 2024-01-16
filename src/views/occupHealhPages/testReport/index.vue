@@ -1,6 +1,6 @@
 <template>
   <div class="viewBody">
-    <div class="query-head">
+    <div class="query-head" id="header">
       <div class="head-form">
         <el-form :inline="true" :model="paramJson" class="demo-form-inline">
           <el-form-item label="报告名称" style="margin-bottom: 0px">
@@ -10,54 +10,30 @@
             <el-input v-model="paramJson.creatorName" size="mini"></el-input>
           </el-form-item>
           <el-form-item label="上传时间" style="margin-bottom: 0px">
-            <el-date-picker
-              size="mini"
-              v-model="paramJson.time"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
-            </el-date-picker>
+            <el-date-picker size="mini" v-model="paramJson.time" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
           </el-form-item>
           <el-form-item style="margin-bottom: 0px">
-            <el-button type="primary" @click="onSubmit" size="mini"
-              >查询</el-button
-            >
+            <el-button type="primary" @click="onSubmit" size="mini">查询</el-button>
             <el-button @click="reSubmit" size="mini">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
     </div>
     <div class="main-content" ref="maincontent">
-      <el-button
-        type="primary"
-        style="margin-bottom: 10px"
-        size="mini"
-        @click="addApi('addApiForm')"
-        >新增</el-button
-      >
-      <el-table
-        :span-method="objectSpanMethod"
-        ref="multipleTable"
-        :data="tableData.listItem"
-        :border="true"
-        style="width: 100%"
-        v-loading="tableloading"
-        :height="Height"
-      >
-        <el-table-column prop="no" label="序号" width="60">
-          <template slot-scope="scope">
-            {{ scope.$index + 1 }}
-          </template>
-        </el-table-column>
+      <el-row id="operate">
+        <el-button type="primary" style="margin-bottom: 10px" size="mini" @click="addApi('addApiForm')">新增</el-button>
+      </el-row>
+      <el-table :span-method="objectSpanMethod" ref="multipleTable" :data="tableData.listItem" :border="true" style="width: 100%" v-loading="tableloading" :height="Height">
+        <el-table-column prop="Nosort" label="序号" width="60" :align="'center'"></el-table-column>
         <el-table-column prop="name" label="报告名称"></el-table-column>
         <el-table-column prop="content" label="报告内容"></el-table-column>
         <el-table-column prop="fileName" label="文件内容">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="handleTurn(scope.row)">{{
+            <el-button type="text" size="mini" @click="handleTurn(scope.row)">
+              {{
               scope.row.fileName
-            }}</el-button>
+              }}
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column prop="pic" label="图片">
@@ -66,102 +42,43 @@
           </template>
         </el-table-column>
         <el-table-column prop="creatorName" label="上传者"></el-table-column>
-        <el-table-column prop="createTime" label="上传时间"></el-table-column>
+        <!-- <el-table-column prop="createTime" label="上传时间"></el-table-column> -->
         <el-table-column prop="code" label="操作">
           <template slot-scope="scope">
-            <el-button @click.stop="delApi(scope.row)" type="text" size="mini"
-              >删除</el-button
-            >
+            <el-button @click.stop="delApi(scope.row)" type="text" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <my-pagination
-        :total="Number(tableData.total)"
-        :current="tableInfo.current"
-        :page-size="tableInfo.size"
-        :page-sizes="[20, 50, 100, 200, 300]"
-        @size-change="changeSize"
-        @current-change="changePage"
-        :layout="'total, sizes, prev, pager, next, jumper'"
-      ></my-pagination>
+      <my-pagination :total="Number(tableData.total)" :current="tableInfo.current" :page-size="tableInfo.size" :page-sizes="[20, 50, 100, 200, 300]" @size-change="changeSize" @current-change="changePage" :layout="'total, sizes, prev, pager, next, jumper'"></my-pagination>
     </div>
     <!-- 新增模态框 -->
     <el-dialog :visible.sync="addDialogVisible" width="30%">
       <span slot="title">{{ isUpdate ? "修改" : "新增" }}</span>
-      <el-form
-        :model="addOrUpdateReq"
-        status-icon
-        ref="addApiForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item
-          label="报告名称"
-          :prop="'name'"
-          :rules="[{ required: true, message: '请填写报告名称' }]"
-        >
+      <el-form :model="addOrUpdateReq" status-icon ref="addApiForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="报告名称" :prop="'name'" :rules="[{ required: true, message: '请填写报告名称' }]">
           <el-input v-model="addOrUpdateReq.name"></el-input>
         </el-form-item>
-        <el-form-item
-          label="报告内容"
-          :prop="'content'"
-          :rules="[{ required: true, message: '请填写报告内容' }]"
-        >
+        <el-form-item label="报告内容" :prop="'content'" :rules="[{ required: true, message: '请填写报告内容' }]">
           <el-input v-model="addOrUpdateReq.content"></el-input>
         </el-form-item>
-        <el-form-item
-          label="上传附件"
-          :prop="'att'"
-          :rules="[{ required: true, message: '请上传附件' }]"
-        >
-          <el-upload
-            class="upload-demo"
-            ref="upload1"
-            action="upload"
-            :on-remove="
+        <el-form-item label="上传附件" :prop="'att'" :rules="[{ required: true, message: '请上传附件' }]">
+          <el-upload class="upload-demo" ref="upload1" action="upload" :on-remove="
               (file, fileList) => handleRemove(file, fileList, 'file')
-            "
-            :file-list="addOrUpdateReq.att"
-            :http-request="(value) => handleImport(value, 'file')"
-            :on-error="handleError"
-            :on-success="handleSuccess"
-          >
-            <el-button slot="trigger" size="mini" type="primary"
-              >上传文件</el-button
-            >
+            " :file-list="addOrUpdateReq.att" :http-request="(value) => handleImport(value, 'file')" :on-error="handleError" :on-success="handleSuccess">
+            <el-button slot="trigger" size="mini" type="primary">上传文件</el-button>
             <div slot="tip" class="el-upload__tip">只能上传文件</div>
           </el-upload>
         </el-form-item>
-        <el-form-item
-          label="上传图片"
-          :prop="'pic'"
-          :rules="[{ required: true, message: '请上传图片' }]"
-        >
-          <el-upload
-            class="upload-demo"
-            ref="upload"
-            action="upload"
-            :on-remove="(file, fileList) => handleRemove(file, fileList, 'pic')"
-            :file-list="addOrUpdateReq.pic"
-            :http-request="(value) => handleImport(value, 'pic')"
-            :on-error="handleError"
-            :on-success="handleSuccess"
-            :list-type="picture"
-          >
-            <el-button slot="trigger" size="mini" type="primary"
-              >上传图片</el-button
-            >
+        <el-form-item label="上传图片" :prop="'pic'" :rules="[{ required: true, message: '请上传图片' }]">
+          <el-upload class="upload-demo" ref="upload" action="upload" :on-remove="(file, fileList) => handleRemove(file, fileList, 'pic')" :file-list="addOrUpdateReq.pic" :http-request="(value) => handleImport(value, 'pic')" :on-error="handleError" :on-success="handleSuccess">
+            <el-button slot="trigger" size="mini" type="primary">上传图片</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
           </el-upload>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false" size="mini"
-          >取 消</el-button
-        >
-        <el-button type="primary" @click="submitForm('addApiForm')" size="mini"
-          >保 存</el-button
-        >
+        <el-button @click="addDialogVisible = false" size="mini">取 消</el-button>
+        <el-button type="primary" @click="submitForm('addApiForm')" size="mini">保 存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -169,11 +86,9 @@
 
 <script>
 import {
-  getTestReportList,
-  setTestReportList,
-  delTestReport,
+  occupHealth,
   // delSysArchivesData,
-} from "../../../api/occupHealth";
+} from "../../../api";
 import { MyPagination } from "../../../components";
 import { showMessage, tools } from "../../../utils";
 
@@ -209,6 +124,7 @@ export default {
       },
       addDialogVisible: false,
       isUpdate: false,
+      spanArr: [],
     };
   },
   created() {
@@ -220,9 +136,15 @@ export default {
   },
   methods: {
     getHeight() {
+      const headerHeight = document.getElementById("header").clientHeight;
+      const operateHeight = document.getElementById("operate").clientHeight;
       //获取浏览器高度并计算得到表格所用高度。
       this.$nextTick(() => {
-        this.Height = document.documentElement.clientHeight - 250;
+        this.Height =
+          document.documentElement.clientHeight -
+          headerHeight -
+          operateHeight -
+          110;
       });
       // 获取接口列表
     },
@@ -236,11 +158,12 @@ export default {
         delete this.paramJson.endTime;
       }
 
-      getTestReportList({
-        ...this.paramJson,
-        current: this.tableInfo.current,
-        size: this.tableInfo.size,
-      })
+      occupHealth
+        .getTestReportList({
+          ...this.paramJson,
+          current: this.tableInfo.current,
+          size: this.tableInfo.size,
+        })
         .then((res) => {
           if (res.data) {
             const data = res.data;
@@ -258,12 +181,13 @@ export default {
                     });
                   });
                 } else {
-                  newData.push(item);
+                  newData.push({ ...item, fileName: "", fileUrl: "" });
                 }
               });
-              this.tableData.listItem = newData;
+              // this.tableData.listItem = newData;
+              console.log("newData", newData);
+              this.rowspan(newData);
             }
-            this.rowspan();
             this.tableData.total = data.data.total;
             // this.tableData.getNo(res.data.current, res.data.size);
             this.tableloading = false;
@@ -276,19 +200,17 @@ export default {
     },
 
     //获得数据相同的行数
-    rowspan() {
+    rowspan(newData) {
       //每次调用清空数据
       this.spanArr = [];
       this.position = 0;
-      this.tableData.listItem.forEach((item, index) => {
+      newData.forEach((item, index) => {
         if (index === 0) {
           this.spanArr.push(1);
           this.position = 0;
         } else {
-          if (
-            this.tableData.listItem[index].id ===
-            this.tableData.listItem[index - 1].id
-          ) {
+          if (item.id === newData[index - 1].id) {
+            console.log("item.id", item);
             this.spanArr[this.position] += 1;
             this.spanArr.push(0);
           } else {
@@ -297,22 +219,24 @@ export default {
           }
         }
       });
+      // 表格序号
+      let Nosort = 0;
+      for (let n in this.spanArr) {
+        if (this.spanArr[n] > 0) {
+          Nosort += 1;
+          this.$set(newData[n], "Nosort", Nosort);
+        }
+      }
+      this.tableData.listItem = newData;
     },
     objectSpanMethod({ rowIndex, columnIndex }) {
-      if (columnIndex === 0) {
-        if (rowIndex % 2 !== 1) {
-          const _row = this.spanArr[rowIndex];
-          const _col = _row > 0 ? 1 : 0;
-          return {
-            rowspan: _row,
-            colspan: _col,
-          };
-        } else {
-          return {
-            rowspan: 0,
-            colspan: 0,
-          };
-        }
+      if (columnIndex !== 3) {
+        const _row = this.spanArr[rowIndex];
+        const _col = _row > 0 ? 1 : 0;
+        return {
+          rowspan: _row,
+          colspan: _col,
+        };
       }
     },
     handleTurn(row) {
@@ -367,9 +291,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          setTestReportList(this.addOrUpdateReq)
-            .then(({data}) => {
-              if( data.code === 200 ) {
+          occupHealth
+            .setTestReportList(this.addOrUpdateReq)
+            .then(({ data }) => {
+              if (data.code === 200) {
                 this.$message.success(showMessage.apiMessage.addSuccess);
                 this.resetForm(formName);
                 this.getList();
@@ -407,28 +332,30 @@ export default {
       const result = await tools.handleImport(value, 1);
       if (type === "file") {
         if (result) {
-        // this.$message.success("上传成功");
+          // this.$message.success("上传成功");
           this.addOrUpdateReq.att.push({
             name: result.name,
             path: result.path,
           });
-        }else {
-          let uid = value.file.uid // 关键作用代码，去除文件列表失败文件
-          let idx = this.$refs.upload.uploadFiles.findIndex(item => item.uid === uid) // 关键作用代码，去除文件列表失败文件（uploadFiles为el-upload中的ref值）
-          this.$refs.upload1.uploadFiles.splice(idx, 1) // 关键作用代码，去除文件列表失败文件
+        } else {
+          let uid = value.file.uid; // 关键作用代码，去除文件列表失败文件
+          let idx = this.$refs.upload.uploadFiles.findIndex(
+            (item) => item.uid === uid
+          ); // 关键作用代码，去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs.upload1.uploadFiles.splice(idx, 1); // 关键作用代码，去除文件列表失败文件
         }
-          
       } else {
         if (result) {
-        // this.$message.success("上传成功");
-        this.addOrUpdateReq.pic.push(result.path);
-        }else {
-          let uid = value.file.uid // 关键作用代码，去除文件列表失败文件
-          let idx = this.$refs.upload.uploadFiles.findIndex(item => item.uid === uid) // 关键作用代码，去除文件列表失败文件（uploadFiles为el-upload中的ref值）
-          this.$refs.upload.uploadFiles.splice(idx, 1) // 关键作用代码，去除文件列表失败文件
+          // this.$message.success("上传成功");
+          this.addOrUpdateReq.pic.push(result.path);
+        } else {
+          let uid = value.file.uid; // 关键作用代码，去除文件列表失败文件
+          let idx = this.$refs.upload.uploadFiles.findIndex(
+            (item) => item.uid === uid
+          ); // 关键作用代码，去除文件列表失败文件（uploadFiles为el-upload中的ref值）
+          this.$refs.upload.uploadFiles.splice(idx, 1); // 关键作用代码，去除文件列表失败文件
         }
       }
-      
     },
     handleRemove(file, fileList, type) {
       console.log(file, fileList);
@@ -449,9 +376,10 @@ export default {
         }
       )
         .then(() => {
-          delTestReport({ id: row.id })
-          .then(({data}) => {
-              if(data.code === 200) {
+          occupHealth
+            .delTestReport({ id: row.id })
+            .then(({ data }) => {
+              if (data.code === 200) {
                 this.$message.success(showMessage.apiMessage.deleteSuccess);
                 this.getList();
               }

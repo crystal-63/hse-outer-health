@@ -23,14 +23,8 @@ module.exports = {
           dataUrlCondition: { maxSize: 1024 * 5 },
         },
         generator: {
-          filename: "css/font/[name]-[hash:8][ext]",
+          filename: "font/[name]-[hash:8][ext]",
         },
-        // options: {
-        //   limit: 10000,
-        //   // 以下是我需要解决路径问题的代码， 只需要加入publicPath: '../../
-        //   publicPath: "../",
-        //   name: "font/[name]-[hash:8].[ext]",
-        // },
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -39,7 +33,7 @@ module.exports = {
           dataUrlCondition: { maxSize: 1024 * 5 },
         },
         generator: {
-          filename: "images/[name]-[hash:8].[ext]",
+          filename: "image/[name]-[hash:8][ext]",
         },
       },
       {
@@ -50,18 +44,23 @@ module.exports = {
           "css-loader",
           "postcss-loader",
           "sass-loader",
-          {
-            loader: "sass-resources-loader",
-            options: {
-              resources: path.resolve(__dirname, "../src/style/variable.scss"),
-            },
-          },
+          // {
+          //   loader: "sass-resources-loader",
+          //   options: {
+          //     resources: path.resolve(
+          //       __dirname,
+          //       "../src/assets/css/common.scss"
+          //     ),
+          //   },
+          // },
         ],
       },
       {
         test: /\.css$/,
         use: [
-          isProd ? MiniCssExtractPlugin.loader : "vue-style-loader",
+          {
+            loader: isProd ? MiniCssExtractPlugin.loader : "vue-style-loader",
+          },
           "css-loader",
           "postcss-loader",
         ],
@@ -80,18 +79,27 @@ module.exports = {
     ],
   },
   plugins: [
-    // new webpack.DefinePlugin({
-    //   // webpack自带该插件，无需单独安装
-    //   "process.env": {
-    //     NODE_ENV: process.env.NODE_ENV, // 将属性转化为全局变量，让代码中可以正常访问
-    //   },
-    // }),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       title: "凤平台职业健康",
-      templateParameters: {
-        BASE_URL: `/`,
+      // templateParameters: {
+      //   BASE_URL: `/xfmWeb/`,
+      // },
+      templateParameters(compilation, assets, options) {
+        return {
+          BASE_URL: `/`,
+          compilation: compilation,
+          webpack: compilation.getStats().toJson(),
+          webpackConfig: compilation.options,
+          htmlWebpackPlugin: {
+            files: assets,
+            options: options,
+          },
+          process,
+        };
       },
+      assetsPublicPath: "./css",
+      favicon: "public/xfm.ico",
       template: "public/index.html",
       ...(isProd
         ? {
@@ -109,11 +117,6 @@ module.exports = {
       src: path.resolve(__dirname, "../src"),
       views: path.resolve(__dirname, "../src/views"),
       components: path.resolve(__dirname, "../src/components"),
-      directives: path.resolve(__dirname, "../src/directives"),
-      filters: path.resolve(__dirname, "../src/filters"),
-      images: path.resolve(__dirname, "../src/images"),
-      modules: path.resolve(__dirname, "../src/modules"),
-      style: path.resolve(__dirname, "../src/style"),
       utils: path.resolve(__dirname, "../src/utils"),
       vue$: "vue/dist/vue.esm.js",
     },
